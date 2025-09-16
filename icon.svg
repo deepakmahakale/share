@@ -1,0 +1,17 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background square with rounded corners -->
+  <rect x="0" y="0" width="200" height="200" rx="28" ry="28" fill="#1BACA6" stroke="none"/>
+
+  <!-- Clean % character -->
+  <text x="100" y="115" text-anchor="middle" dominant-baseline="middle" font-family="Arial, Helvetica, sans-serif" font-size="120" font-weight="bold" fill="#ffffff">%</text>
+
+  <!-- Subtle highlight for depth -->
+  <rect x="0" y="0" width="200" height="80" rx="28" ry="28" fill="url(#highlight)" opacity="0.2"/>
+
+  <defs>
+    <linearGradient id="highlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+</svg>
