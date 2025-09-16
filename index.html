@@ -89,7 +89,7 @@
 <body>
 
     <div class="container">
-        <input type="number" id="totalAmount" placeholder="Enter total amount" value="100" onfocus="this.select()">
+        <input type="number" id="totalAmount" placeholder="Enter total amount" value="100" onfocus="this.select()" pattern="[0-9]*" inputmode="numeric">
 
         <div class="phase">
             <label>
@@ -177,6 +177,13 @@
             toggle.addEventListener('change', calculateAmounts);
         });
         tdsToggle.addEventListener('change', calculateAmounts);
+
+        totalAmountInput.addEventListener('focus', function() {
+            // Small timeout to allow the keyboard to start appearing
+            setTimeout(() => {
+                this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        });
 
         // Initial calculation on page load
         calculateAmounts();
