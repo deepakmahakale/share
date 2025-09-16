@@ -59,7 +59,7 @@
             background-color: #0056b3;
         }
 
-        input[type="number"] {
+        #totalAmount {
             width: 100%;
             padding: 12px;
             margin-bottom: 24px;
@@ -99,7 +99,7 @@
 <body>
 
     <div class="container">
-        <input type="number" id="totalAmount" placeholder="Enter total amount" value="100" onfocus="this.select()" pattern="[0-9]*" inputmode="numeric">
+        <input type="text" id="totalAmount" placeholder="Enter total amount" value="100" onfocus="this.select()" inputmode="numeric">
 
         <div class="phase">
             <label>
@@ -151,8 +151,15 @@
             3: 9.9
         };
 
+        function formatIndianCurrency(input) {
+            let value = input.value.replace(/,/g, '');
+            if (isNaN(value) || value === '') return;
+            let number = parseFloat(value);
+            input.value = number.toLocaleString('en-IN');
+        }
+
         function calculateAmounts() {
-            let totalAmount = parseFloat(totalAmountInput.value) || 0;
+            let totalAmount = parseFloat(totalAmountInput.value.replace(/,/g, '')) || 0;
             let totalSelectedPercentage = 0;
 
             if (tdsToggle.checked) {
@@ -170,26 +177,32 @@
 
             // Reset all amounts first
             for (const phase in phaseAmounts) {
-                phaseAmounts[phase].textContent = '0.00';
+                phaseAmounts[phase].textContent = (0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             }
 
             if (totalSelectedPercentage > 0) {
                 selectedPhases.forEach(phase => {
                     const phasePercentage = phasePercentages[phase];
                     const calculatedAmount = (totalAmount * phasePercentage) / totalSelectedPercentage;
-                    phaseAmounts[phase].textContent = calculatedAmount.toFixed(2);
+                    phaseAmounts[phase].textContent = calculatedAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 });
             }
         }
 
         totalAmountInput.addEventListener('input', calculateAmounts);
+        totalAmountInput.addEventListener('blur', () => formatIndianCurrency(totalAmountInput));
+        totalAmountInput.addEventListener('focus', () => {
+            totalAmountInput.value = totalAmountInput.value.replace(/,/g, '');
+        });
+
         phaseToggles.forEach(toggle => {
             toggle.addEventListener('change', calculateAmounts);
         });
         tdsToggle.addEventListener('change', calculateAmounts);
 
-        // Initial calculation on page load
+        // Initial calculation and formatting on page load
         calculateAmounts();
+        formatIndianCurrency(totalAmountInput);
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
