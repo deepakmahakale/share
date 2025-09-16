@@ -99,7 +99,7 @@
 <body>
 
     <div class="container">
-        <input type="text" id="totalAmount" placeholder="Enter total amount" value="100" onfocus="this.select()" inputmode="numeric">
+        <input type="text" id="totalAmount" placeholder="Enter total amount" value="100" inputmode="numeric">
 
         <div class="phase">
             <label>
@@ -193,6 +193,7 @@
         totalAmountInput.addEventListener('blur', () => formatIndianCurrency(totalAmountInput));
         totalAmountInput.addEventListener('focus', () => {
             totalAmountInput.value = totalAmountInput.value.replace(/,/g, '');
+            totalAmountInput.select();
         });
 
         phaseToggles.forEach(toggle => {
