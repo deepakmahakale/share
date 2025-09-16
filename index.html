@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <title>Share Amount Calculator</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        .phase {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <input type="number" id="totalAmount" placeholder="Enter total amount" value="1000">
+
+        <div class="phase">
+            <label>
+                <input type="checkbox" class="phase-toggle" data-phase="1" checked>
+                Phase 1 (46.46%)
+            </label>
+            <span id="phase1Amount"></span>
+        </div>
+
+        <div class="phase">
+            <label>
+                <input type="checkbox" class="phase-toggle" data-phase="2" checked>
+                Phase 2 (43.64%)
+            </label>
+            <span id="phase2Amount"></span>
+        </div>
+
+        <div class="phase">
+            <label>
+                <input type="checkbox" class="phase-toggle" data-phase="3" checked>
+                Phase 3 (9.9%)
+            </label>
+            <span id="phase3Amount"></span>
+        </div>
+    </div>
+
+    <script>
+        const totalAmountInput = document.getElementById('totalAmount');
+        const phaseToggles = document.querySelectorAll('.phase-toggle');
+        const phaseAmounts = {
+            1: document.getElementById('phase1Amount'),
+            2: document.getElementById('phase2Amount'),
+            3: document.getElementById('phase3Amount')
+        };
+
+        const phasePercentages = {
+            1: 46.46,
+            2: 43.64,
+            3: 9.9
+        };
+
+        function calculateAmounts() {
+            const totalAmount = parseFloat(totalAmountInput.value) || 0;
+            let totalSelectedPercentage = 0;
+
+            const selectedPhases = [];
+            phaseToggles.forEach(toggle => {
+                if (toggle.checked) {
+                    const phase = toggle.dataset.phase;
+                    totalSelectedPercentage += phasePercentages[phase];
+                    selectedPhases.push(phase);
+                }
+            });
+
+            // Reset all amounts first
+            for (const phase in phaseAmounts) {
+                phaseAmounts[phase].textContent = '0.00';
+            }
+
+            if (totalSelectedPercentage > 0) {
+                selectedPhases.forEach(phase => {
+                    const phasePercentage = phasePercentages[phase];
+                    const calculatedAmount = (totalAmount * phasePercentage) / totalSelectedPercentage;
+                    phaseAmounts[phase].textContent = calculatedAmount.toFixed(2);
+                });
+            }
+        }
+
+        totalAmountInput.addEventListener('input', calculateAmounts);
+        phaseToggles.forEach(toggle => {
+            toggle.addEventListener('change', calculateAmounts);
+        });
+
+        // Initial calculation on page load
+        calculateAmounts();
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+
+</body>
+
+</html>
