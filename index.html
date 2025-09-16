@@ -89,7 +89,7 @@
 <body>
 
     <div class="container">
-        <input type="number" id="totalAmount" placeholder="Enter total amount" value="1000">
+        <input type="number" id="totalAmount" placeholder="Enter total amount" value="100" onfocus="this.select()">
 
         <div class="phase">
             <label>
@@ -114,12 +114,21 @@
             </label>
             <span id="phase3Amount"></span>
         </div>
+
+        <div class="phase">
+            <label>
+                <input type="checkbox" id="tds-toggle">
+                Deduct 1% TDS
+            </label>
+        </div>
+
         <button id="installBtn" style="display: none;">Install App</button>
     </div>
 
     <script>
         const totalAmountInput = document.getElementById('totalAmount');
         const phaseToggles = document.querySelectorAll('.phase-toggle');
+        const tdsToggle = document.getElementById('tds-toggle');
         const phaseAmounts = {
             1: document.getElementById('phase1Amount'),
             2: document.getElementById('phase2Amount'),
@@ -133,8 +142,12 @@
         };
 
         function calculateAmounts() {
-            const totalAmount = parseFloat(totalAmountInput.value) || 0;
+            let totalAmount = parseFloat(totalAmountInput.value) || 0;
             let totalSelectedPercentage = 0;
+
+            if (tdsToggle.checked) {
+                totalAmount = totalAmount * 0.99;
+            }
 
             const selectedPhases = [];
             phaseToggles.forEach(toggle => {
@@ -163,6 +176,7 @@
         phaseToggles.forEach(toggle => {
             toggle.addEventListener('change', calculateAmounts);
         });
+        tdsToggle.addEventListener('change', calculateAmounts);
 
         // Initial calculation on page load
         calculateAmounts();
